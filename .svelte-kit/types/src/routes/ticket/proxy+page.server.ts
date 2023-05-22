@@ -9,9 +9,7 @@ export const load = async ({ locals }) => {
 	const { user } = await locals.auth.validateUser();
 	if (!user) throw redirect(302, '/login');
 
-	let userOptions = await prisma.authUser.findMany({
-		where: { role: { in: 'USER' } }
-	});
+	let userOptions = await prisma.authUser.findMany({});
 
 	return {
 		user,
@@ -24,6 +22,13 @@ export const actions = {
 	default:/** @param {import('./$types').RequestEvent} event */  async ({ request, locals }) => {
 		const { user } = await locals.auth.validateUser();
 		const form = await request.formData();
+
+		let owner: any = form.get('owner');
+
+		if (owner === null) {
+			owner = user?.userId;
+		}
+
 		let phone: any = form.get('phone');
 		let title: any = form.get('title');
 		let issue: any = form.get('issue');
@@ -34,10 +39,10 @@ export const actions = {
 
 		await prisma.ticket.create({
 			data: {
+				owner: { connect: { id: owner } },
 				phone,
 				title,
-				issue,
-				authUser: { connect: { id: user?.userId } }
+				issue
 			}
 		});
 
