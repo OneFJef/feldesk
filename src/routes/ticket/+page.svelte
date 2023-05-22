@@ -9,13 +9,11 @@
 
 <Nav />
 
-<p>{data.user?.name} ---- {data.user?.role}</p>
-
 <div class="max-w-lg mx-auto">
 	<h1 class="h1">Create a Ticket</h1>
 	<form method="post" use:enhance>
 		{#if data.user?.role !== 'USER'}
-			<select class="select m-1">
+			<select class="select m-1" id="owner" name="owner">
 				<option>Select User...</option>
 				{#each data.userOptions as user}
 					<option value={user.id}>{user.name}</option>
