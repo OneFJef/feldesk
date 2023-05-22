@@ -9,24 +9,8 @@ export const load = async ({ locals, params }) => {
 
 	const ticket = await prisma.ticket.findUnique({
 		where: { id: Number(params.ticket) },
-		include: { authUser: true }
+		include: { owner: true, agent: true }
 	});
-
-	console.log(ticket);
-
-	function findTech(array: any) {
-		const filteredUsers = [];
-		for (let index = 0; index < array.length; index++) {
-			if (array[index].role === 'TECH') {
-				filteredUsers.push(array[index]);
-			}
-		}
-		return filteredUsers;
-	}
-
-	const tech = findTech(ticket?.authUser);
-
-	console.log(tech);
 
 	const note = await prisma.note.findMany({
 		where: { ticketId: { in: Number(params.ticket) } },
@@ -36,7 +20,6 @@ export const load = async ({ locals, params }) => {
 
 	return {
 		user,
-		tech,
 		ticket,
 		note
 	};
@@ -71,7 +54,7 @@ export const actions = {
 				where: { id: Number(params.ticket) },
 				data: {
 					status: 'CLOSED',
-					authUser: { connect: { id: user?.userId } }
+					agent: { connect: { id: user?.userId } }
 				}
 			});
 		} else {
