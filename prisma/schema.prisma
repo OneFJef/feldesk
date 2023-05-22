@@ -1,0 +1,79 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "cockroachdb"
+    url      = env("DATABASE_URL")
+}
+
+model AuthUser {
+    id          String        @id @unique
+    email       String        @unique
+    name        String
+    role        Role          @default(USER)
+    ticket      Ticket[]
+    note        Note[]
+    AuthSession AuthSession[]
+    AuthKey     AuthKey[]
+
+    @@map("auth_user")
+}
+
+model AuthSession {
+    id             String   @id @unique
+    user_id        String
+    active_expires BigInt
+    idle_expires   BigInt
+    auth_user      AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+    @@index([user_id])
+    @@map("auth_session")
+}
+
+model AuthKey {
+    id              String   @id @unique
+    hashed_password String?
+    user_id         String
+    primary_key     Boolean
+    expires         BigInt?
+    auth_user       AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+    @@index([user_id])
+    @@map("auth_key")
+}
+
+enum Role {
+    ADMIN
+    TECH
+    USER
+}
+
+model Ticket {
+    id        Int        @id @default(sequence(start: 10000))
+    phone     String
+    title     String
+    issue     String
+    authUser  AuthUser[]
+    status    Status     @default(OPEN)
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    note      Note[]
+}
+
+enum Status {
+    OPEN
+    WORKING
+    CLOSED
+}
+
+model Note {
+    id         Int       @id @default(sequence())
+    content    String
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+    AuthUser   AuthUser? @relation(fields: [authUserId], references: [id])
+    authUserId String?
+    Ticket     Ticket?   @relation(fields: [ticketId], references: [id])
+    ticketId   Int?
+}
