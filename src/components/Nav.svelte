@@ -5,10 +5,9 @@
 
 <div class="flex justify-between items-center mb-6">
 	<form method="post" use:enhance action="?/signOut">
-		<!-- {#if $page.url.pathname !== '/ticket'}
-			<button class="hidden btn variant-filled" type="submit">Sign out</button>
-		{/if} -->
-		<button class="btn variant-filled" type="submit">Sign out</button>
+		{#if $page.url.pathname !== '/ticket'}
+			<button class="btn variant-filled" type="submit">Sign out</button>
+		{/if}
 	</form>
 	<div>
 		{#if $page.url.pathname !== '/dashboard'}
