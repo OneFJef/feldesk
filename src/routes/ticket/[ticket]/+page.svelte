@@ -9,7 +9,7 @@
 
 <Nav />
 
-<div class="flex flex-wrap justify-center pb-16">
+<div class="flex flex-wrap justify-center">
 	<h2 class="h2 min-w-full mt-6 px-2">Ticket: {data.ticket?.id}</h2>
 	<div class="card">
 		<header class="card-header flex justify-between items-center">
@@ -27,11 +27,7 @@
 		<div class="card m-4 p-4 flex justify-evenly">
 			<div class="grid grid-cols-2">
 				<div>User:</div>
-				{#if data.ticket?.authUser[0].role !== 'USER'}
-					<div>{data.ticket?.authUser[1].name}</div>
-				{:else}
-					<div>{data.ticket?.authUser[1].name}</div>
-				{/if}
+				<div>No user</div>
 				<div>Email:</div>
 				<div>{data.user?.email}</div>
 				<div>Phone:</div>
@@ -40,17 +36,8 @@
 			<span class="divider-vertical mx-4" />
 			<div class="grid grid-cols-2 gap-x-8">
 				<div>Assigned Tech:</div>
-				<div>
-					{#if !data.ticket?.authUser[1]}
-						Unassigned
-					{:else if data.ticket?.authUser[1].role !== 'USER'}
-						<div>{data.ticket?.authUser[0].name}</div>
-					{:else}
-						<div>{data.ticket?.authUser[0].name}</div>
-					{/if}
-				</div>
+				<div>Unassigned</div>
 				<div>Status:</div>
-
 				{#if data.ticket?.status === 'OPEN'}
 					<div class="text-red-500">{data.ticket?.status}</div>
 				{:else if data.ticket?.status === 'WORKING'}
@@ -58,7 +45,6 @@
 				{:else}
 					<div class="text-green-500">{data.ticket?.status}</div>
 				{/if}
-
 				<div>Last Update:</div>
 				<div>{dayjs(data.ticket?.updatedAt).fromNow()}</div>
 			</div>

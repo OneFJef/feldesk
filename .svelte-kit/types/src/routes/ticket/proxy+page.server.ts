@@ -8,8 +8,14 @@ import { fail, redirect } from '@sveltejs/kit';
 export const load = async ({ locals }) => {
 	const { user } = await locals.auth.validateUser();
 	if (!user) throw redirect(302, '/login');
+
+	let userOptions = await prisma.authUser.findMany({
+		where: { role: { in: 'USER' } }
+	});
+
 	return {
-		user
+		user,
+		userOptions
 	};
 };
 

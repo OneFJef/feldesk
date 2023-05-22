@@ -1,15 +1,27 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Nav from '../../components/Nav.svelte';
+	import type { PageData } from './$types';
 
+	export let data: PageData;
 	export let form: { message?: string };
 </script>
 
 <Nav />
 
+<p>{data.user?.name} ---- {data.user?.role}</p>
+
 <div class="max-w-lg mx-auto">
 	<h1 class="h1">Create a Ticket</h1>
 	<form method="post" use:enhance>
+		{#if data.user?.role !== 'USER'}
+			<select class="select m-1">
+				<option>Select User...</option>
+				{#each data.userOptions as user}
+					<option value={user.id}>{user.name}</option>
+				{/each}
+			</select>
+		{/if}
 		<input
 			class="input m-1 rounded-md"
 			type="text"
