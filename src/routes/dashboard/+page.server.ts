@@ -8,13 +8,19 @@ export const load = async ({ locals }) => {
 	if (!user) throw redirect(302, '/login');
 
 	const activeTickets = await prisma.ticket.findMany({
-		where: { status: { in: ['OPEN', 'WORKING'] }, authUser: { some: { id: user.userId } } },
-		include: { authUser: { orderBy: { role: 'desc' } } }
+		where: {
+			status: { in: ['OPEN', 'WORKING'] },
+			OR: [{ owner: { some: { id: user.userId } } }, { agent: { some: { id: user.userId } } }]
+		},
+		include: { owner: true, agent: true }
 	});
 
 	const closedTickets = await prisma.ticket.findMany({
-		where: { status: { in: 'CLOSED' }, authUser: { some: { id: user.userId } } },
-		include: { authUser: { orderBy: { role: 'desc' } } }
+		where: {
+			status: { in: 'CLOSED' },
+			OR: [{ owner: { some: { id: user.userId } } }, { agent: { some: { id: user.userId } } }]
+		},
+		include: { owner: true, agent: true }
 	});
 
 	return {

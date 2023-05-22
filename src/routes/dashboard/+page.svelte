@@ -11,7 +11,7 @@
 <Nav />
 
 <!-- <pre>
-{JSON.stringify(data.tickets, null, 2)}	
+{JSON.stringify(data.activeTickets , null, 2)}	
 </pre> -->
 
 <TabGroup>
@@ -50,15 +50,16 @@
 									<td class="text-yellow-500">{ticket.status}</td>
 								{/if}
 								{#if data.user.role !== 'USER'}
-									<td>{ticket.authUser[0].name}</td>
+									<td>{ticket.owner[0].name}</td>
 									<td>{dayjs(ticket.updatedAt).fromNow()}</td>
 								{:else}
 									<td>{dayjs(ticket.updatedAt).fromNow()}</td>
 									<td>
-										{#if !ticket.authUser[1]}
+										{#if !ticket.agent[0]}
 											Unassigned
 										{:else}
-											{ticket.authUser[1].name}
+										<!-- error thrown when .name is added -->
+											{ticket.agent[0].name}
 										{/if}
 									</td>
 								{/if}
@@ -95,15 +96,16 @@
 								<td>{ticket.title}</td>
 								<td class="text-green-500">{ticket.status}</td>
 								{#if data.user.role !== 'USER'}
-									<td>{ticket.authUser[0].name}</td>
+									<td>{ticket.owner[0].name}</td>
 									<td>{dayjs(ticket.updatedAt).fromNow()}</td>
 								{:else}
 									<td>{dayjs(ticket.updatedAt).fromNow()}</td>
 									<td>
-										{#if !ticket.authUser[1]}
+										{#if !ticket.agent[0]}
 											Unassigned
 										{:else}
-											{ticket.authUser[1].name}
+										<!-- error thrown when .name is added -->
+											{ticket.agent[0].name}
 										{/if}
 									</td>
 								{/if}
