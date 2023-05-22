@@ -8,14 +8,15 @@ datasource db {
 }
 
 model AuthUser {
-    id          String        @id @unique
-    email       String        @unique
-    name        String
-    role        Role          @default(USER)
-    ticket      Ticket[]
-    note        Note[]
-    AuthSession AuthSession[]
-    AuthKey     AuthKey[]
+    id              String        @id @unique
+    email           String        @unique
+    name            String
+    role            Role          @default(USER)
+    tickets         Ticket[]      @relation("TicketOwner")
+    ticketsAssigned Ticket[]      @relation("TicketAgent")
+    note            Note[]
+    AuthSession     AuthSession[]
+    AuthKey         AuthKey[]
 
     @@map("auth_user")
 }
@@ -54,7 +55,8 @@ model Ticket {
     phone     String
     title     String
     issue     String
-    authUser  AuthUser[]
+    owner     AuthUser[] @relation("TicketOwner")
+    agent     AuthUser[] @relation("TicketAgent")
     status    Status     @default(OPEN)
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt
