@@ -8,6 +8,10 @@ export const load = async ({ locals, params }) => {
 	const { user } = await locals.auth.validateUser();
 	if (!user) throw redirect(302, '/login');
 
+	const agents = await prisma.authUser.findMany({
+		where: { role: { not: 'USER' } }
+	});
+
 	const ticket = await prisma.ticket.findUnique({
 		where: { id: Number(params.ticket) },
 		include: { owner: true, agent: true }
@@ -21,6 +25,7 @@ export const load = async ({ locals, params }) => {
 
 	return {
 		user,
+		agents,
 		ticket,
 		note
 	};
@@ -28,6 +33,49 @@ export const load = async ({ locals, params }) => {
 
 /** */
 export const actions = {
+	assignTicket:/** @param {import('./$types').RequestEvent} event */  async ({ request, params }) => {
+		const { user } = await locals.auth.validateUser();
+		const form = await request.formData();
+
+		let agent: any = form.get('agent');
+
+		await prisma.ticket.update({
+			where: { id: Number(params.ticket) },
+			data: { agent: { connect: { id: agent } } }
+		});
+
+		const content: string = `Ticket assigned to ${user?.name}.`;
+
+		await prisma.note.create({
+			data: {
+				content,
+				ticketId: Number(params.ticket),
+				authUserId: user?.userId
+			}
+		});
+
+		throw redirect(303, `/ticket/`);
+	},
+
+	pickupTicket:/** @param {import('./$types').RequestEvent} event */  async ({ locals, params }) => {
+		const { user } = await locals.auth.validateUser();
+
+		await prisma.ticket.update({
+			where: { id: Number(params.ticket) },
+			data: { agent: { connect: { id: user?.userId } } }
+		});
+
+		const content: string = `Ticket assigned to ${user?.name}.`;
+
+		await prisma.note.create({
+			data: {
+				content,
+				ticketId: Number(params.ticket),
+				authUserId: user?.userId
+			}
+		});
+	},
+
 	openTicket:/** @param {import('./$types').RequestEvent} event */  async ({ locals, params }) => {
 		const { user } = await locals.auth.validateUser();
 

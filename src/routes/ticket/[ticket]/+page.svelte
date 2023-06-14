@@ -14,15 +14,22 @@
 	<div class="card min-w-full">
 		<header class="card-header flex justify-between items-center">
 			{data.ticket?.title}
-			{#if data.ticket?.status === 'CLOSED'}
-				<form method="post" use:enhance action="?/openTicket">
-					<button class="btn btn-sm variant-filled">Re-Open Ticket</button>
-				</form>
-			{:else}
-				<form method="post" use:enhance action="?/closeTicket">
-					<button class="btn btn-sm variant-filled">Close Ticket</button>
-				</form>
-			{/if}
+			<div class="flex">
+				{#if (!data.ticket?.agent[0] && data.user.role !== 'USER') || data.ticket?.agent[0].id !== data.user.userId}
+					<form method="post" use:enhance action="?/pickupTicket">
+						<button class="btn btn-sm variant-filled">Pickup Ticket</button>
+					</form>
+				{/if}
+				{#if data.ticket?.status === 'CLOSED'}
+					<form method="post" use:enhance action="?/openTicket">
+						<button class="btn btn-sm variant-filled">Re-Open Ticket</button>
+					</form>
+				{:else}
+					<form method="post" use:enhance action="?/closeTicket">
+						<button class="btn btn-sm variant-filled">Close Ticket</button>
+					</form>
+				{/if}
+			</div>
 		</header>
 		<div class="card m-4 p-4 flex justify-evenly">
 			<div class="">

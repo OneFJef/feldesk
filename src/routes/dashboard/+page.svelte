@@ -17,6 +17,9 @@
 <TabGroup>
 	<Tab bind:group={tabSet} name="tab1" value={0}>Active Tickets</Tab>
 	<Tab bind:group={tabSet} name="tab2" value={1}>Closed Tickets</Tab>
+	{#if data.user.role !== 'USER'}
+		<Tab bind:group={tabSet} name="tab2" value={2}>Unassigned Tickets</Tab>
+	{/if}
 
 	<svelte:fragment slot="panel">
 		{#if tabSet === 0}
@@ -58,7 +61,6 @@
 										{#if !ticket.agent[0]}
 											Unassigned
 										{:else}
-										<!-- error thrown when .name is added -->
 											{ticket.agent[0].name}
 										{/if}
 									</td>
@@ -104,7 +106,6 @@
 										{#if !ticket.agent[0]}
 											Unassigned
 										{:else}
-										<!-- error thrown when .name is added -->
 											{ticket.agent[0].name}
 										{/if}
 									</td>
