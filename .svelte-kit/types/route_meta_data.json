@@ -5,6 +5,9 @@
 	"/dashboard": [
 		"src/routes/dashboard/+page.server.ts"
 	],
+	"/dashboard/admin": [
+		"src/routes/dashboard/admin/+page.server.ts"
+	],
 	"/login": [
 		"src/routes/login/+page.server.ts"
 	],
