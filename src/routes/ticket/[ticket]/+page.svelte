@@ -32,7 +32,7 @@
 			</div>
 		</header>
 		<div class="card m-4 p-4 flex justify-evenly">
-			<div class="">
+			<div>
 				<div>
 					User: {data.ticket?.owner[0].name}
 				</div>
@@ -44,7 +44,7 @@
 				</div>
 			</div>
 			<span class="divider-vertical mx-4" />
-			<div class="">
+			<div>
 				<div>
 					Assigned Tech:
 					{#if !data.ticket?.agent[0]}
